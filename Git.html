@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MRDU Smart Campus Assistant</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #111827;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('mrdu-logo.png') center center no-repeat;
+    background-size: contain;
+    opacity: 0.1;
+    z-index: 0;
+  }
+  .chat-container {
+    position: relative;
+    background: white;
+    width: 600px;
+    height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+  }
+  header {
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    color: white;
+    padding: 16px;
+    font-weight: bold;
+  }
+  #chat-box {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background: #f9fafb;
+  }
+  .msg {
+    max-width: 75%;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    line-height: 1.3;
+    white-space: pre-wrap;
+  }
+  .msg.bot {
+    background: #eef2f6;
+    color: #0f172a;
+    align-self: flex-start;
+  }
+  .msg.user {
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    color: white;
+    align-self: flex-end;
+  }
+  .input-area {
+    display: flex;
+    padding: 12px;
+    border-top: 1px solid #e2e8f0;
+    background: white;
+  }
+  input[type="text"] {
+    flex-grow: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d6dbe6;
+    font-size: 14px;
+    outline: none;
+  }
+  button {
+    margin-left: 12px;
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="chat-container" role="application" aria-label="MRDU Smart Campus Assistant">
+    <header>MRDU Smart Campus Assistant</header>
+    <div id="chat-box" aria-live="polite" aria-atomic="false">
+      <div class="msg bot">👋 Hello! Ask me anything about Malla Reddy Deemed University—courses, admissions, placements, library, hostels, and more.</div>
+    </div>
+    <div class="input-area">
+      <input id="user-input" type="text" aria-label="Type your question" placeholder="Type your question here and press Enter or Send" />
+      <button id="send-btn" type="button" aria-label="Send message">Send</button>
+    </div>
+  </div>
+
+<script>
+  const chatBox = document.getElementById('chat-box');
+  const input = document.getElementById('user-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  const knowledgeBase = {
+    courses: "Undergraduate: B.Tech (CSE, ECE, EEE, ME, CE, IT), B.Sc, BBA, BA.\nPostgraduate: M.Tech, M.Sc, MBA, MCA.\nPh.D programs and interdisciplinary research available.",
+    admissions: "Online applications & downloadable brochures available on the official site.\nCheck eligibility and deadlines on the admissions page.",
+    placements: "Top recruiters include Infosys, TCS, Wipro, Deloitte, Accenture, Tech Mahindra, Capgemini.\nPlacement statistics are available department-wise on the placements page.",
+    library: "Central library with digital and physical resources.\nOpen Mon-Sat from 9 AM to 8 PM (confirm timings on portal).",
+    hostel: "Separate hostels for boys and girls with mess facilities.\nContact hostel office for admissions and queries.",
+    transport: "College buses operate on multiple routes in Hyderabad.\nFirst pickups start around 7:00 AM. Check transport office for details.",
+    research: "MRDU has active research centers, MoUs, publications, and sponsored projects.\nVisit the Research section on the official website.",
+    contacts: "Address: Maisammaguda, Dhulapally, Kompally, Secunderabad - 500100.\nPhone: +91-98765-43210\nAdmin email: admin@mrdu.edu\nPlacements email: placements@mrdu.edu\nWebsite: www.mallareddyuniversity.ac.in"
+  };
+
+  function appendMessage(text, sender = 'bot') {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'msg ' + sender;
+    msgDiv.textContent = text;
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function getAnswer(question) {
+    question = question.toLowerCase();
+    if (/(hello|hi|hey|greetings)/.test(question)) {
+      return "👋 Hello! Ask me anything about MRDU – courses, admissions, placements, departments, library, hostels, transport, research, and more.";
+    }
+    if (/course|program|degree|phd|mba|mtech/.test(question)) {
+      return knowledgeBase.courses;
+    }
+    if (/admission|apply|eligibility|brochure|application/.test(question)) {
+      return knowledgeBase.admissions;
+    }
+    if (/placement|job|recruiter|internship/.test(question)) {
+      return knowledgeBase.placements;
+    }
+    if (/library|books|reading|digital/.test(question)) {
+      return knowledgeBase.library;
+    }
+    if (/hostel|accommodation|mess/.test(question)) {
+      return knowledgeBase.hostel;
+    }
+    if (/transport|bus|shuttle|route/.test(question)) {
+      return knowledgeBase.transport;
+    }
+    if (/research|mo[u]?|publication|project/.test(question)) {
+      return knowledgeBase.research;
+    }
+    if (/contact|phone|email|address|location/.test(question)) {
+      return knowledgeBase.contacts;
+    }
+    return "Sorry, I don't have information on that. Please try asking about courses, admissions, placements, library, hostels, transport, research or contacts.";
+  }
+
+  function sendMessage(){
+    const question = input.value.trim();
+    if (!question) return;
+    appendMessage(question, 'user');
+    input.value = '';
+    setTimeout(() => {
+      const answer = getAnswer(question);
+      appendMessage(answer, 'bot');
+    }, 300);
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+</script>
+</body>
+</html>
